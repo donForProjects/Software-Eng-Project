@@ -6,6 +6,7 @@ import datetime as dt
 from tkinter import ttk
 from datetime import datetime
 import pytz
+import csv
 
 #VIDEO FRAME
 width, height = 600, 500
@@ -14,8 +15,7 @@ cap.set(cv2.CAP_PROP_FRAME_WIDTH, width)
 cap.set(cv2.CAP_PROP_FRAME_HEIGHT, height)
 
 #face cascade
-face_classifier = cv2.CascadeClassifier(
-    cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + "haarcascade_frontalface_default.xml")
 
 
 #WINDOW FRAME
@@ -40,10 +40,9 @@ root.title('Isabela State University Cauayan Campus')
 
 #TAKING PICS
 def snapshot():
-    img = Image.fromarray(cv2image)
+    img = Image.fromarray(img)
     time = str(dt.datetime.now().today()).replace(":"," ")+ ".jpg"
     img.save(time)
-
 
 #FRAME
 def show_frame():
@@ -64,14 +63,12 @@ def show_frame():
         #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
     #return faces
 
-#def detect_bounding_box(vid):
-    #gray_image = cv2.cvtColor(vid, cv2.COLOR_BGR2GRAY)
-    #faces = face_classifier.detectMultiScale(gray_image, 1.1, 5, minSize=(40, 40))
-    #for (x, y, w, h) in faces:
-        #cv2.rectangle(vid, (x, y), (x + w, y + h), (0, 255, 0), 4)
-    #return faces
-
-
+def detect_bounding_box(vid):
+    gray_image = cv2.cvtColor(vid, cv2.COLOR_BGR2GRAY)
+    faces = face_cascade.detectMultiScale(gray_image, 1.1, 5, minSize=(40, 40))
+    for (x, y, w, h) in faces:
+        cv2.rectangle(vid, (x, y), (x + w, y + h), (0, 255, 0), 4)
+    return faces
 
 def update_clock():
     raw_TS = datetime.now(IST)
@@ -88,6 +85,7 @@ def update_clock():
 my_tree.tag_configure('orow', background="#EEEEEE", font=('Verdana', 10))
 my_tree.place(x=730, y=60, height=260)
 
+#BODY
 label2 = tk.Label(root, text="ISU-CC INSTRUCTORS ATTENDANCE", font=('Verdana', 20, 'bold'))
 label2.place(x=500,y=0)
 
@@ -105,19 +103,23 @@ label_time_now.place(x=1150, y=450)
 style = ttk.Style()
 style.configure("Treeview.Heading", font=('Verdana', 13, 'bold'))
 
-my_tree['columns'] = ("Instructor ID", "Name", "Time In", "Time Out")
+my_tree['columns'] = ("Date and Time", "Name")
 
 my_tree.column("#0", width=0, stretch=NO)
-my_tree.column("Instructor ID", anchor=CENTER, width=165)
+my_tree.column("Date and Time", anchor=CENTER, width=165)
 my_tree.column("Name", anchor=CENTER, width=165)
-my_tree.column("Time In", anchor=CENTER, width=165)
-my_tree.column("Time Out", anchor=CENTER, width=165)
 
-my_tree.heading("Instructor ID", text="Instructor ID", anchor=CENTER)
+my_tree.heading("Date and Time", text="Date and Time", anchor=CENTER)
 my_tree.heading("Name", text="Name", anchor=CENTER)
-my_tree.heading("Time In", text="Time In", anchor=CENTER)
-my_tree.heading("Time Out", text="Time Out", anchor=CENTER)
+
+# Read data from the CSV file and insert it into the table
+with open('attendance.csv', 'r') as file:
+    csvreader = csv.reader(file)
+    for row in csvreader:
+        my_tree.insert('', 'end', values=row)
+
 
 update_clock()
 show_frame()
 root.mainloop()
+detect_bounding_box()
