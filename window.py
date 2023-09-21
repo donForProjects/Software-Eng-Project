@@ -59,10 +59,10 @@ def show_frame():
     #for (x, y, w, h) in faces:
         #cv2.rectangle(img, (x, y), (x+w, y+h), (255, 0, 0), 2)
 
-    #faces = face_classifier.detectMultiScale(cv2image, 1.1, 5, minSize=(10, 10))
-    #for (x, y, w, h) in faces:
-        #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
-    #return faces
+    faces = face_classifier.detectMultiScale(cv2image, 1.1, 5, minSize=(10, 10))
+    for (x, y, w, h) in faces:
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 4)
+    return faces
 
 #def detect_bounding_box(vid):
     #gray_image = cv2.cvtColor(vid, cv2.COLOR_BGR2GRAY)
