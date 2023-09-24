@@ -105,18 +105,14 @@ label_time_now.place(x=1150, y=450)
 style = ttk.Style()
 style.configure("Treeview.Heading", font=('Verdana', 13, 'bold'))
 
-my_tree['columns'] = ("Instructor ID", "Name", "Time In", "Time Out")
+my_tree['columns'] = ("Date and Time", "Name")
 
 my_tree.column("#0", width=0, stretch=NO)
-my_tree.column("Instructor ID", anchor=CENTER, width=165)
+my_tree.column("Date and Time", anchor=CENTER, width=165)
 my_tree.column("Name", anchor=CENTER, width=165)
-my_tree.column("Time In", anchor=CENTER, width=165)
-my_tree.column("Time Out", anchor=CENTER, width=165)
 
-my_tree.heading("Instructor ID", text="Instructor ID", anchor=CENTER)
+my_tree.heading("Date and Time", text="Date and Time", anchor=CENTER)
 my_tree.heading("Name", text="Name", anchor=CENTER)
-my_tree.heading("Time In", text="Time In", anchor=CENTER)
-my_tree.heading("Time Out", text="Time Out", anchor=CENTER)
 
 update_clock()
 show_frame()
