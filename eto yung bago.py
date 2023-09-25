@@ -25,7 +25,7 @@ known_images_path = ['img/don', 'img/ian', 'img/sonnie']
 known_face_encodings = []
 known_face_names = []
 
-
+#Read the Path file 
 for i in range(3):
     for filename in os.listdir(known_images_path[i]):
         if filename.endswith((".jpg", ".png")):
@@ -36,11 +36,32 @@ for i in range(3):
             known_face_names.append(name)
 
 
+current_time = datetime.now().strftime('%Y-%m-%d')
 
-
+newname = 'attendance'+current_time+'.csv'
 # Create and open a CSV file for attendance tracking
-csv_file = open('attendance.csv', 'w', newline='')
-csv_writer = csv.writer(csv_file)
+# csv_create = open('attendance'+current_time+'.csv', 'w')
+# csv_writer = csv.writer(csv_create)
+
+
+
+
+path = 'attendance'+ current_time+'.csv'
+
+# Check whether the specified
+# path exists or not
+isExist = os.path.exists(path)
+
+print(isExist)
+
+if isExist == True:
+# csv_file = open('attendance'+ current_time+'.csv','w', newline='')
+    csv_file = open('attendance'+ current_time+'.csv','r+', newline='')
+    csv_writer = csv.writer(csv_file)
+else:
+    csv_file = open('attendance'+ current_time+'.csv','w', newline='')
+    csv_writer = csv.writer(csv_file)
+
 
 detected_names = set()
 
@@ -70,10 +91,18 @@ def my_camera():
             if True in matches:
                 first_match_index = matches.index(True)
                 name = known_face_names[first_match_index]
+
+                #PARA MAAPALITAN YUNG NAME NA ILALAGAY SA CSV AHHAHA PAKI GITPUSH NALANG 
+                remove = "()123456789"
+                for char in remove:
+                    name = name.replace(char, "")
+
                 
                 if name not in detected_names:
                     # Record the current time
-                    current_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+                    current_time = datetime.now().strftime('%H:%M:%S')
+
+
                     
                     # Save the attendance record in the CSV file
                     csv_writer.writerow([current_time, name])
@@ -152,7 +181,6 @@ my_tree['columns'] = ("Date and Time", "Name")
 my_tree.column("#0", width=0, stretch=NO)
 my_tree.column("Date and Time", anchor=CENTER, width=327)
 my_tree.column("Name", anchor=CENTER, width=327)
-
 my_tree.heading("Date and Time", text="Date and Time", anchor=CENTER)
 my_tree.heading("Name", text="Name", anchor=CENTER)
 
