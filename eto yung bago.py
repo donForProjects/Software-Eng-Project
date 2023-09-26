@@ -38,7 +38,7 @@ for i in range(3):
 
 current_time = datetime.now().strftime('%Y-%m-%d')
 
-newname = 'attendance'+current_time+'.csv'
+# newname = 'attendance'+current_time+'.csv'
 # Create and open a CSV file for attendance tracking
 # csv_create = open('attendance'+current_time+'.csv', 'w')
 # csv_writer = csv.writer(csv_create)
@@ -46,24 +46,75 @@ newname = 'attendance'+current_time+'.csv'
 
 
 
-path = 'attendance'+ current_time+'.csv'
+path_in = 'check_in'+ current_time+'.csv'
+path_out = 'check_out'+ current_time+'.csv'
 
 # Check whether the specified
 # path exists or not
-isExist = os.path.exists(path)
+isExist_in = os.path.exists(path_in)
+isExist_out = os.path.exists(path_out)
 
-print(isExist)
 
-if isExist == True:
+print(isExist_in, isExist_out)
+
+if isExist_in == True and isExist_out == True:
 # csv_file = open('attendance'+ current_time+'.csv','w', newline='')
-    csv_file = open('attendance'+ current_time+'.csv','r+', newline='')
-    csv_writer = csv.writer(csv_file)
+    csv_file = open('check_in'+ current_time+'.csv','r+', newline='')
+    csv_writer_in = csv.writer(csv_file)
+    csv_file = open('check_out'+ current_time+'.csv','r+', newline='')
+    csv_writer_out = csv.writer(csv_file)
 else:
-    csv_file = open('attendance'+ current_time+'.csv','w', newline='')
-    csv_writer = csv.writer(csv_file)
+    csv_file = open('check_in'+ current_time+'.csv','w', newline='')
+    csv_writer_in = csv.writer(csv_file)
+    csv_file = open('check_out'+ current_time+'.csv','w', newline='')
+    csv_writer_out = csv.writer(csv_file)
 
 
 detected_names = set()
+
+# def blah(pindot):
+#     global btn_click
+#     btn_click = pindot
+
+# def out_check():
+#     my_btn = btn_click
+#     return my_btn
+    
+# def a():
+#     b = out_check()
+#     print(b)
+
+# blah("")
+# out_check()
+# a()
+
+
+
+# button_value = None
+
+# # Function to handle button clicks
+# def button_click(button_name):
+#     global button_value
+#     if button_name == "CHECK_IN":
+#         button_value = "CHECK_IN"
+#     elif button_name == "CHECK_OUT":
+#         button_value = "CHECK_OUT"
+
+# # Function to get the button value
+# def get_button_value():
+#     return button_value
+
+# # Function to return the value without parameters
+# def return_btn():
+#     return get_button_value()
+
+
+button_value = None
+
+# Create a function to handle button clicks
+def button_click(button_name):
+    global button_value
+    button_value = button_name
 
 def my_camera():
 
@@ -102,11 +153,22 @@ def my_camera():
                     # Record the current time
                     current_time = datetime.now().strftime('%H:%M:%S')
 
-
+                    # attendance = get_button_value()
                     
+                    if button_value == "CHECK_OUT":
                     # Save the attendance record in the CSV file
-                    csv_writer.writerow([current_time, name])
-                    detected_names.add(name)
+                        print("OUT")
+                        csv_writer_out.writerow([current_time, name])
+                        detected_names.add(name)
+                    elif button_value == "CHECK_IN":
+                        print("IN")
+                        csv_writer_in.writerow([current_time, name])
+                        detected_names.add(name)
+                    else:
+                        print("No Value")
+
+                    # csv_writer_out.writerow([current_time, name])
+                    # detected_names.add(name)
         
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             cv2.putText(frame, name, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
@@ -135,6 +197,11 @@ def update_clock():
 
 
 
+
+
+
+
+
 #WINDOW
 root = tk.Tk()
 root.resizable(False, False)
@@ -156,8 +223,8 @@ label_date_now.place(x=730, y=450)
 label_time_now = tk.Label(text="Current Time", font = 'Verdana 20 bold')
 label_time_now.place(x=1150, y=450)
 
-Button(text="CHECK IN", font=('Verdana', 15, 'bold'), width=15, height=1, bg='SpringGreen4', foreground='white').place(x=730, y=340)
-Button(text="CHECK OUT", font=('Verdana', 15, 'bold'), width=15, height=1, bg='SpringGreen4', foreground='white').place(x=1170, y=340)
+Button(text="CHECK IN", font=('Verdana', 15, 'bold'), width=15, height=1, bg='SpringGreen4', foreground='white', command=lambda: button_click("CHECK_IN")).place(x=730, y=340)
+Button(text="CHECK OUT", font=('Verdana', 15, 'bold'), width=15, height=1, bg='SpringGreen4', foreground='white', command=lambda: button_click("CHECK_OUT")).place(x=1170, y=340)
 
 
 
@@ -183,7 +250,6 @@ my_tree.column("Date and Time", anchor=CENTER, width=327)
 my_tree.column("Name", anchor=CENTER, width=327)
 my_tree.heading("Date and Time", text="Date and Time", anchor=CENTER)
 my_tree.heading("Name", text="Name", anchor=CENTER)
-
 
 
 
